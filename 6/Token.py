@@ -10,33 +10,27 @@ path = f"{os.path.expanduser('~')}/Token.txt"
 url = 'http://dvdtfsp:8080/tfs/ComputingSystems_Collection/'
 WEBDRIVER_CHROME = f"/usr/bin/chromedriver"
 
-        def createToken():
-
-        # שיפור היכולת של CreateToken עם ניהול משופר של קבצים
-        # проверить, что токен актуален и не истек
-    try:
-        if os.path.isfile(path):
-            creation_time = os.path.getctime(path)
-            creation_datetime = datetime.fromtimestamp(creation_time)
-            current_datetime = datetime.now()
-            time_difference = current_datetime - creation_datetime
-            if time_difference < timedelta(days=90):
-                f = open(path, "r")
-                token=f.read()
-                if(token==""):
-                    os.remove(path)
-                    return getToken()
-                else:
-                    return token
-            if 'driver' in locals():
-                driver.quit()
-            finally:
-
-            return getToken()
-# обрабатывать ошибки более осмысленно
-print('Ошибка при доступе к файлу токена, создание нового токена.');
-
-return getToken()
+def createToken():
+    try:
+        if os.path.isfile(path):
+            creation_time = os.path.getctime(path)
+            creation_datetime = datetime.fromtimestamp(creation_time)
+            current_datetime = datetime.now()
+            time_difference = current_datetime - creation_datetime
+            if time_difference < timedelta(days=90):
+                with open(path, 'r') as f:
+                    token = f.read()
+                    if token == '':
+                        os.remove(path)
+                        return getToken()
+                    else:
+                        return token
+        if 'driver' in locals():
+            driver.quit()
+    except Exception as e:
+        print(f'Error accessing token file: {e}')
+        return getToken()
+    return getToken()
 
 def getToken():
     f = open(path, "w")
