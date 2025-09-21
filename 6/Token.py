@@ -10,7 +10,9 @@ path = f"{os.path.expanduser('~')}/Token.txt"
 url = 'http://dvdtfsp:8080/tfs/ComputingSystems_Collection/'
 WEBDRIVER_CHROME = f"/usr/bin/chromedriver"
 
-def createToken():
+    def createToken():
+        # שיפור היכולת של CreateToken עם ניהול משופר של קבצים
+        # проверить, что токен актуален и не истек
     try:
         if os.path.isfile(path):
             creation_time = os.path.getctime(path)
@@ -25,14 +27,14 @@ def createToken():
                     return getToken()
                 else:
                     return token
-            else:
-                os.remove(path)
-                return getToken()
+        finally:
+            if 'driver' in locals():
+                driver.quit()
         else:
             return getToken()
-    except:
-        os.remove(path)
-        return getToken()
+# обрабатывать ошибки более осмысленно
+print('Ошибка при доступе к файлу токена, создание нового токена.');
+return getToken()
 
 def getToken():
     f = open(path, "w")
