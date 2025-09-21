@@ -1,3 +1,4 @@
+# הוספת לוגיקה חדשה לניהול שגיאות
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -10,7 +11,9 @@ path = f"{os.path.expanduser('~')}/Token.txt"
 url = 'http://dvdtfsp:8080/tfs/ComputingSystems_Collection/'
 WEBDRIVER_CHROME = f"/usr/bin/chromedriver"
 
-def createToken():
+    def createToken():
+        # שיפור פונקציית יצירת טוקן
+        try:
     try:
         if os.path.isfile(path):
             creation_time = os.path.getctime(path)
