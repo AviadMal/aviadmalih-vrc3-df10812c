@@ -19,8 +19,8 @@ WEBDRIVER_CHROME = f"/usr/bin/chromedriver"
             time_difference = current_datetime - creation_datetime
             if time_difference < timedelta(days=90):
                 with open(path, 'r') as f:
-                    token = f.read()
-                    if token == '':
+                    token = f.read() or None
+                    if token is None:
                         os.remove(path)
                         return getToken()
                     else:
