@@ -125,7 +125,7 @@ def get_workitem_id(project, area, iteration):
     query = Wiql(
         query=f"""SELECT [System.Id] FROM workitems
            WHERE [System.WorkItemType] IN ('User Story')
-           AND [System.State] <> 'Closed'
+           AND [System.State]  'Closed'
            AND ([System.Title] = 'Bugs' OR [System.Title] = 'Features')
            AND [System.AreaPath] = '{area}'
            ORDER BY [System.Title]"""
@@ -361,11 +361,11 @@ def add_task(title, description, type, member, project , area, iteration, repo_n
     project_id = get_project_id(project)
     repo_id = get_repos_id(project, repo_name)
     commit_id = get_commit_id(project, repo_id)
-    info = f"<div>********************DO NOT REMOVE********************</div>"
-    info += f"<div>commit: {commit_id}</div>"
-    info += f"<div>test name: {test_name}</div>"
-    info += f"<div>seed: {seed}</div>"
-    info += f"<div>***********************************************************</div>"
+    info = f"********************DO NOT REMOVE********************"
+    info += f"commit: {commit_id}"
+    info += f"test name: {test_name}"
+    info += f"seed: {seed}"
+    info += f"***********************************************************"
     description = info+description
     if commit_id != '':
         url_input = 'vstfs:///Git/Commit/{}%2F{}%2F{}'.format(project_id, repo_id, commit_id)
@@ -423,9 +423,9 @@ def get_repo_name():
         return repo_name.decode()
     return ""
 
-def get_area(project,member):
+def get_area(project, member):
     areas=[]
-    team_url = f"{url}/_apis/teams?api-version=5.1-preview.3"
+    areas = []
 
 
     authorization = str(base64.b64encode(bytes(':' + token, 'ascii')), 'ascii')
@@ -437,7 +437,7 @@ def get_area(project,member):
     response = requests.get(url=team_url, headers=headers)
     response_json = json.loads(response.text)
 
-    for value in response_json["value"]:
+            areas.append(value['name'])
         if value['projectName'] == project:
 
             team_id = value["id"]
@@ -451,9 +451,13 @@ def get_area(project,member):
             for user in users["value"]:
                 if(member in user["identity"]["displayName"]):
                     area=value["name"]
+            # אם נמצא את המשתמש, הוסף את האזור לרשימה
+            # אם נמצא את המשתמש, הוסף את האזור לרשימה
                     
     areas.remove(area)
-    areas.insert(0,area)
+    areas.insert(0, area)
+    return areas
+    areas.insert(0, area)
     return areas
 
 
@@ -517,8 +521,8 @@ def get_bug_workitems():
             workitem = response.json()
             if(workitem['fields']['System.WorkItemType'] == 'Bug'):
                 if(workitem['fields']['Custom.EPRTypepic'] == 'Defect'):
-                    if(workitem['fields']['System.Description'].startswith("<div>****************")):
-                        workitems.append(f"{workitem['fields']['System.Title']}  <vrc>")
+                    if(workitem['fields']['System.Description'].startswith("****************")):
+                        workitems.append(f"{workitem['fields']['System.Title']}  ")
                     else:
                         workitems.append(workitem['fields']['System.Title'])
                     stateitem.append(workitem['fields']['System.State'])
@@ -561,7 +565,7 @@ def get_current_project_name():
 def get_bug_id(bug):
     query = Wiql(
         query=f"""SELECT [System.Id] FROM workitems
-           WHERE [System.State] <> 'Closed'
+           WHERE [System.State]  'Closed'
            AND [System.Title] = '{bug}'"""
     )
     query_results = wit_client.query_by_wiql(query).work_items
